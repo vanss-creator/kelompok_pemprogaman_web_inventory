@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path'); // 1. TAMBAHKAN INI DI ATAS
 require('dotenv').config();
 
 const barangRoutes = require('./routes/barangRoutes');
@@ -10,7 +11,12 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static('public')); // <-- KODE BARU, pemanggil web HTML
+app.use(express.static('public')); 
+
+// 2. TAMBAHKAN ROUTE INI TEPAT DI BAWAH MIDDLEWARE
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 // Routes
 app.use('/api', barangRoutes);
