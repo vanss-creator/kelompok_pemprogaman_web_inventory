@@ -25,3 +25,11 @@ app.use('/api', barangRoutes);
 app.listen(PORT, () => {
     console.log(`Server berjalan di http://localhost:${PORT}`);
 });
+// ... kode kamu yang lain ...
+
+app.listen(PORT, () => {
+    console.log(`Server berjalan di http://localhost:${PORT}`);
+});
+
+// WAJIB TAMBAHKAN INI DI BARIS PALING BAWAH
+module.exports = app;
