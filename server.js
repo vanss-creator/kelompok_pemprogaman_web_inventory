@@ -14,8 +14,9 @@ app.use(express.json());
 app.use(express.static('public')); 
 
 // 2. TAMBAHKAN ROUTE INI TEPAT DI BAWAH MIDDLEWARE
+// UBAH KODE INI di server.js kamu
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(path.join(__dirname, 'public', 'index.html')); // <-- Ditambahkan 'public' di tengahnya
 });
 
 // Routes
