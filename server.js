@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const path = require('path'); // 1. TAMBAHKAN INI DI ATAS
+const path = require('path');
 require('dotenv').config();
 
 const barangRoutes = require('./routes/barangRoutes');
@@ -11,26 +11,22 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static('public')); 
 
-// 2. TAMBAHKAN ROUTE INI TEPAT DI BAWAH MIDDLEWARE
-// UBAH KODE INI di server.js kamu
+// 1. Sajikan folder 'public' secara statis menggunakan absolute path
+app.use(express.static(path.join(__dirname, 'public')));
+
+// 2. Kirim index.html yang berada di dalam folder public ke halaman utama '/'
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html')); // <-- Ditambahkan 'public' di tengahnya
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Routes
+// Routes API
 app.use('/api', barangRoutes);
 
-// Jalankan Server
-app.listen(PORT, () => {
-    console.log(`Server berjalan di http://localhost:${PORT}`);
-});
-// ... kode kamu yang lain ...
-
+// Jalankan Server (Hanya untuk lokal, Vercel akan mengabaikan listen ini)
 app.listen(PORT, () => {
     console.log(`Server berjalan di http://localhost:${PORT}`);
 });
 
-// WAJIB TAMBAHKAN INI DI BARIS PALING BAWAH
+// 3. WAJIB DIEXPORT: Agar Vercel bisa memperlakukan file ini sebagai Serverless Function
 module.exports = app;
