@@ -28,5 +28,5 @@ app.listen(PORT, () => {
     console.log(`Server berjalan di http://localhost:${PORT}`);
 });
 
-// 3. WAJIB DIEXPORT: Agar Vercel bisa memperlakukan file ini sebagai Serverless Function
+// 3. Vercel bisa memperlakukan file ini sebagai Serverless Function
 module.exports = app;

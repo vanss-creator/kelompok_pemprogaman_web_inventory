@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Sistem Inventori</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-dark d-flex align-items-center justify-content-center" style="height: 100vh;">
+
+    <div class="card shadow-lg p-4" style="width: 100%; max-width: 400px; border-radius: 12px;">
+        <div class="text-center mb-4">
+            <h4 class="fw-bold text-primary">Sistem Inventori</h4>
+            <small class="text-muted">Silakan masuk untuk mengelola data</small>
+        </div>
+
+        <div id="alertBox" class="alert alert-danger d-none" role="alert"></div>
+        
+        <form id="loginForm">
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Username</label>
+                <input type="text" id="username" class="form-control" placeholder="Masukkan username" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Password</label>
+                <input type="password" id="password" class="form-control" placeholder="Masukkan password" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 fw-bold py-2 mt-2">Masuk</button>
+        </form>
+    </div>
+
+    <script>
+        // Cek jika user sudah login sebelumnya, langsung alihkan ke dashboard utama
+        if (localStorage.getItem('isLoggedIn') === 'true') {
+            window.location.href = 'index.html';
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const usernameInput = document.getElementById('username').value;
+            const passwordInput = document.getElementById('password').value;
+            const alertBox = document.getElementById('alertBox');
+
+            // Akun login instan (bisa kamu ubah sesuai keinginan)
+            const USERNAME_BENAR = "12345";
+            const PASSWORD_BENAR = "6789";
+
+            if (usernameInput === USERNAME_BENAR && passwordInput === PASSWORD_BENAR) {
+                // Set status login ke browser
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('userAktif', usernameInput);
+                
+                // Alihkan ke halaman utama
+                window.location.href = 'index.html';
+            } else {
+                // Tampilkan error jika salah
+                alertBox.innerText = "Username atau Password salah!";
+                alertBox.classList.remove('d-none');
+            }
+        });
+    </script>
+</body>
+</html>

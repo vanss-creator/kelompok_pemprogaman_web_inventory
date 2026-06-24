@@ -1,16 +1,35 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistem Inventori Barang</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <script>
+        // === 1. KUNCI PROTEKSI HALAMAN (Wajib ditaruh paling atas) ===
+        if (localStorage.getItem('isLoggedIn') !== 'true') {
+            window.location.href = 'login.html';
+        }
+
+        // Fungsi untuk keluar sistem
+        function logout() {
+            localStorage.clear(); // Hapus data login
+            window.location.href = 'login.html'; // Lempar kembali ke login
+        }
+        // ==============================================================
+    </script>
 </head>
+
 <body class="bg-light">
 
     <div class="container my-5">
-        <h2 class="text-center mb-4">Sistem Manajemen Inventori Barang</h2>
-        
+        <div class="text-center mb-4">
+            <h2 class="mb-2">Sistem Manajemen Inventori Barang</h2>
+            <button onclick="logout()" class="btn btn-danger btn-sm shadow-sm">🚪 Keluar (Logout)</button>
+        </div>
+
         <div class="row">
             <div class="col-md-4 mb-4">
                 <div class="card shadow-sm">
@@ -51,11 +70,12 @@
             </div>
 
             <div class="col-md-8">
-                <div class="mb-3">
+                <div class="mb-3 d-flex gap-2">
                     <div class="input-group shadow-sm">
                         <span class="input-group-text bg-white">🔍</span>
                         <input type="text" id="searchInput" class="form-control" placeholder="Cari nama barang atau kategori..." onkeyup="searchBarang()">
                     </div>
+                    <a href="cetak.html" target="_blank" class="btn btn-secondary shadow-sm px-4">🖨️ Cetak</a>
                 </div>
 
                 <div class="card shadow-sm">
@@ -119,35 +139,31 @@
                         </tr>
                     `;
                 });
-                
-                // Pastikan filter pencarian tetap berlaku jika user sedang mengetik saat data di-refresh
+
                 searchBarang();
             } catch (error) {
                 console.error('Gagal mengambil data:', error);
             }
         }
 
-        // FITUR BARU: Fungsi Filter Pencarian di Sisi Client (Real-time)
+        // Fungsi Filter Pencarian di Sisi Client (Real-time)
         function searchBarang() {
             const input = document.getElementById('searchInput').value.toLowerCase();
             const table = document.getElementById('barangTable');
             const tr = table.getElementsByTagName('tr');
 
-            // Loop semua baris tabel (kecuali header indeks 0)
             for (let i = 1; i < tr.length; i++) {
-                // Ambil kolom Nama Barang (indeks 1) dan Kategori (indeks 2)
                 const tdNama = tr[i].getElementsByTagName('td')[1];
                 const tdKategori = tr[i].getElementsByTagName('td')[2];
-                
+
                 if (tdNama || tdKategori) {
                     const txtNama = tdNama.textContent || tdNama.innerText;
                     const txtKategori = tdKategori.textContent || tdKategori.innerText;
-                    
-                    // Jika teks nama atau kategori cocok dengan input, tampilkan barisnya
+
                     if (txtNama.toLowerCase().indexOf(input) > -1 || txtKategori.toLowerCase().indexOf(input) > -1) {
                         tr[i].style.display = "";
                     } else {
-                        tr[i].style.display = "none"; // Sembunyikan baris jika tidak cocok
+                        tr[i].style.display = "none";
                     }
                 }
             }
@@ -156,7 +172,7 @@
         // Mengubah Stok secara Cepat (+1 / -1)
         async function ubahStokCepat(id, stokSaatIni, perubahan) {
             const stokBaru = stokSaatIni + perubahan;
-            
+
             if (stokBaru < 0) {
                 alert('Stok tidak boleh kurang dari 0!');
                 return;
@@ -190,7 +206,7 @@
         // 2. CREATE & UPDATE: Simpan data dari Form
         document.getElementById('barangForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             const id = document.getElementById('barangId').value;
             const payload = {
                 nama_barang: document.getElementById('nama').value,
@@ -246,14 +262,16 @@
             document.getElementById('cancelBtn').classList.remove('d-none');
         }
 
-        function resetForm() {
+        // Fungsi Reset Form kembali ke kondisi awal
+        void function resetForm() {
             document.getElementById('barangForm').reset();
             document.getElementById('barangId').value = '';
             document.getElementById('formTitle').innerText = 'Tambah Barang Baru';
             document.getElementById('submitBtn').innerText = 'Simpan Barang';
             document.getElementById('submitBtn').className = 'btn btn-success w-100';
-            document.getElementById('cancelBtn').classList.add('d-none'); // Perbaikan selektor classList
-        }
+            document.getElementById('cancelBtn').classList.add('d-none');
+        }()
     </script>
 </body>
+
 </html>
