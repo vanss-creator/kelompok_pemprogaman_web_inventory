@@ -12,33 +12,47 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// === STATIS FILES ===
-// Menyajikan folder 'public' (tempat index.html, login.html, cetak.html berada)
+// === SERVING STATIC FILES ===
+// Express akan membaca file dari folder root UTAMA dan folder PUBLIC sekaligus
+app.use(express.static(path.join(__dirname)));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.static(path.join(__dirname))); // Backup jika file ditaruh di root luar folder public
 
 // === ROUTES API ===
 app.use('/api', barangRoutes);
 
 // === LOGIKA ROUTING HALAMAN ===
-// 1. Jalur Utama: Langsung buka halaman login.html saat web pertama kali diakses
+// Fungsi bantu untuk mengecek file di beberapa lokasi agar tidak gampang 'Not Found'
+const kirimHalaman = (res, namaFile) => {
+    // Jalur pertama: coba cari di folder utama (root)
+    res.sendFile(path.join(__dirname, namaFile), (err) => {
+        if (err) {
+            // Jalur kedua: jika di root tidak ada, coba cari di dalam folder public
+            res.sendFile(path.join(__dirname, 'public', namaFile), (err2) => {
+                if (err2) {
+                    // Jika kedua tempat tidak ada, kirim pesan error yang jelas
+                    res.status(404).send(`File ${namaFile} tidak ditemukan di root maupun di folder public.`);
+                }
+            });
+        }
+    });
+};
+
+// 1. Jalur Utama (Akses Web): Langsung buka login.html
 app.get('/', (req, res) => {
-    // Cek apakah login.html ada di dalam folder public atau root luar
-    res.sendFile(path.join(__dirname, 'public', 'login.html'));
+    kirimHalaman(res, 'login.html');
 });
 
-// 2. Jalur Alternatif: Pencegah error "Not Found". Jika rute acak diakses, balikkan ke login
+// 2. Pencegah "Cannot GET": Jika user mengakses rute acak, arahkan ke login.html
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'login.html'));
+    kirimHalaman(res, 'login.html');
 });
 
-// === JALANKAN SERVER ===
-// Hanya berjalan di lokal komputer. Vercel akan mengabaikan listen ini secara otomatis.
+// === JALANKAN SERVER LOKAL ===
 if (process.env.NODE_ENV !== 'production') {
     app.listen(PORT, () => {
         console.log(`Server berjalan di http://localhost:${PORT}`);
     });
 }
 
-// === EXPORT UNTUK VERCEL (Wajib Berada di Paling Bawah File) ===
+// === EXPORT UNTUK VERCEL ===
 module.exports = app;
