@@ -31,11 +31,15 @@ app.listen(PORT, () => {
 // 3. Vercel bisa memperlakukan file ini sebagai Serverless Function
 module.exports = app;
 
-
-// 1. Pastikan Express bisa membaca folder utama tempat kamu menyimpan index.html, login.html, dan cetak.html
 app.use(express.static(path.join(__dirname)));
 
-// 2. Pastikan rute utama (/) langsung mengarah ke halaman login
+// KUNCI BIAR TIDAK NOT FOUND:
+// Jika orang mengakses domain utama (contoh.vercel.app), langsung lempar ke login.html
 app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'login.html'));
+});
+
+// Jika ada error rute lain, pastikan tidak langsung 'Not Found' polos, tapi diarahkan dengan benar
+app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'login.html'));
 });
