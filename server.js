@@ -30,3 +30,12 @@ app.listen(PORT, () => {
 
 // 3. Vercel bisa memperlakukan file ini sebagai Serverless Function
 module.exports = app;
+
+
+// 1. Pastikan Express bisa membaca folder utama tempat kamu menyimpan index.html, login.html, dan cetak.html
+app.use(express.static(path.join(__dirname)));
+
+// 2. Pastikan rute utama (/) langsung mengarah ke halaman login
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'login.html'));
+});
